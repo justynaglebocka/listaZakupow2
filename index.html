@@ -8,7 +8,15 @@
 </head>
 <body>
     <div class="container">
-        <button onclick="showShopList()">Wyświetl liste zakupów</button>
+        <form>
+          <label for="fname">Nazwa</label><br>
+          <input type="text" id="name" name="fname"><br>
+          <label for="fname">Sklep</label><br>
+          <input type="text" id="shop" name="fname"><br>
+          <label for="fname">Kategoria</label><br>
+          <input type="text" id="category" name="fname"><br>
+        </form>
+        <br><button onclick="addToShopList()" class="btn btn-primary">Dodaj do listy zakupów</button></br>
         <table class="table">
             <thead>
               <tr>
@@ -25,7 +33,16 @@
           </table>
       </div>
     <script>
-        function showShopList() {
+      
+        async function  showShopList() {
+
+            const apiUrlPopular ="http://192.168.1.105:8087/api/v1/products";
+            const response = await fetch(apiUrlPopular);
+            const data = await response.json();
+            console.log(data);
+            for (i=0; i< data.length; i++){
+
+
           let tbody = document.getElementById("tbody");
 
           let tr = document.createElement("tr");
@@ -34,19 +51,19 @@
           let th = document.createElement("th"); 
           tr.appendChild(th);
           th.setAttribute("scope", "row");
-          th.innerText = "data[i].id";
+          th.innerText = data[i].id;
 
           let td1 = document.createElement("td");
           tr.appendChild(td1);
-          td1.innerText = "data[i].name";
+          td1.innerText = data[i].name;
 
           let td2 = document.createElement("td");
           tr.appendChild(td2);
-          td2.innerText = "data[i].id.shopName";
+          td2.innerText = data[i].shopName;
 
           let td3 = document.createElement("td");
           tr.appendChild(td3);
-          td3.innerText = "data[i].category";
+          td3.innerText = data[i].category;
 
           let td4 = document.createElement("td");
           tr.appendChild(td4);
@@ -57,7 +74,35 @@
           td5.innerHTML = '<i class="fas fa-trash-alt"></i>';
         }
         
+      }
         showShopList();
+
+        function addToShopList() {
+          let name = document.getElementById("name").value;
+          let shop = document.getElementById("shop").value;
+          let category = document.getElementById("category").value;
+          console.log(name);
+
+          if (name =="" || shop ==""|| category =="" ){
+            alert("pole nie może być puste");
+          }
+
+          daneDoWyslania = {
+                "name": name,
+                "shopName": shop,
+                "category": category
+            }
+
+            fetch('http://192.168.1.105:8087/api/v1/products/', {
+            method: 'POST',
+            headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify(daneDoWyslania)
+            })
+
+
+        }
 
     </script>
 
